@@ -3,24 +3,7 @@
 ## Serving Nemotron 120B NVFP4
 
 ```bash
-docker run \
-  -d \
-  --gpus all \
-  --restart unless-stopped \
-  -v ~/.cache/huggingface:/root/.cache/huggingface \
-  --shm-size=16g \
-  -p 8989:8000 \
-  -e HUGGING_FACE_HUB_TOKEN=<token> \
-  -e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass \
-  -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
-  vllm/vllm-openai:v0.17.1-cu130 \
-  --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 \
-  --dtype auto \
-  --kv-cache-dtype fp8 \
-  --trust-remote-code \
-  --gpu-memory-utilization 0.9 \
-  --tensor-parallel-size 2 \
-  --enable-expert-parallel
+docker run -d --gpus all --restart unless-stopped -v ~/.cache/huggingface:/root/.cache/huggingface --shm-size=16g -p 8989:8000 -e HUGGING_FACE_HUB_TOKEN=<token> -e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 vllm/vllm-openai:v0.17.1-cu130 --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 --dtype auto --kv-cache-dtype fp8 --trust-remote-code --gpu-memory-utilization 0.9 --tensor-parallel-size 2 --enable-expert-parallel
 ```
 
 ### Docker Parameters
