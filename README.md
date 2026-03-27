@@ -4,6 +4,7 @@
 
 ```bash
 docker run \
+  -d \
   --gpus all \
   --restart unless-stopped \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
@@ -26,6 +27,7 @@ docker run \
 
 | Parameter | Description |
 |---|---|
+| 'd' | Runs the docker container in detached mode. ( Background process } |
 | `--gpus all` | Exposes all NVIDIA GPUs to the container via the NVIDIA Container Toolkit. |
 | `--restart unless-stopped` | Automatically restarts the container if it crashes, unless you explicitly stop it. Survives host reboots. |
 | `-v ~/.cache/huggingface:/root/.cache/huggingface` | Mounts the host's Hugging Face cache into the container so model weights are downloaded once and reused across runs. |
