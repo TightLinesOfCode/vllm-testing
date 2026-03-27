@@ -3,7 +3,7 @@
 ## Serving Nemotron 120B NVFP4
 
 ```bash
-docker run -d --gpus all --restart unless-stopped -v ~/.cache/huggingface:/root/.cache/huggingface --shm-size=16g -p 8989:8000 -e HUGGING_FACE_HUB_TOKEN=<token> -e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 vllm/vllm-openai:v0.17.1-cu130 --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 --dtype auto --kv-cache-dtype fp8 --trust-remote-code --gpu-memory-utilization 0.9 --tensor-parallel-size 2 --enable-expert-parallel
+docker run --gpus all --restart unless-stopped -v ~/.cache/huggingface:/root/.cache/huggingface --shm-size=16g -p 8989:8000 -e HUGGING_FACE_HUB_TOKEN=<token> -e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 vllm/vllm-openai:v0.17.1-cu130 --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 --dtype auto --kv-cache-dtype fp8 --trust-remote-code --gpu-memory-utilization 0.9 --tensor-parallel-size 2 --enable-expert-parallel
 ```
 
 ### Docker Parameters
@@ -16,7 +16,7 @@ docker run -d --gpus all --restart unless-stopped -v ~/.cache/huggingface:/root/
 | `-v ~/.cache/huggingface:/root/.cache/huggingface` | Mounts the host's Hugging Face cache into the container so model weights are downloaded once and reused across runs. |
 | `--shm-size=16g` | Sets shared memory to 16 GB. Required for PyTorch's NCCL multi-GPU communication which uses `/dev/shm` for inter-process data transfer. |
 | `-p 8989:8000` | Maps host port 8989 to the container's port 8000, where the vLLM OpenAI-compatible API server listens. |
-| `-e HUGGING_FACE_HUB_TOKEN=<token>` | Provides your Hugging Face access token for downloading gated models. |
+| `-e HUGGING_FACE_HUB_TOKEN=[token]` | Provides your Hugging Face access token for downloading gated models. |
 | `-e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass` | Selects the FlashInfer-CUTLASS backend for NVFP4 matrix multiplications, which is optimized for Blackwell GPUs. |
 | `-e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1` | Allows the model to use its full context length even when vLLM would otherwise cap it due to memory constraints. |
 
