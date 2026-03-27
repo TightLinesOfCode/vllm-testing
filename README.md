@@ -3,14 +3,14 @@
 ## Serving Nemotron 120B NVFP4
 
 ```bash
-docker run --gpus all --restart unless-stopped -v ~/.cache/huggingface:/root/.cache/huggingface --shm-size=16g -p 8989:8000 -e HUGGING_FACE_HUB_TOKEN=[token] -e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 vllm/vllm-openai:v0.17.1-cu130 --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 --dtype auto --kv-cache-dtype fp8 --trust-remote-code --gpu-memory-utilization 0.9 --tensor-parallel-size 2 --enable-expert-parallel
+docker run -d --gpus all --restart unless-stopped -v ~/.cache/huggingface:/root/.cache/huggingface --shm-size=16g -p 8989:8000 -e HUGGING_FACE_HUB_TOKEN=[token] -e VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 vllm/vllm-openai:v0.17.1-cu130 --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 --dtype auto --kv-cache-dtype fp8 --trust-remote-code --gpu-memory-utilization 0.9 --tensor-parallel-size 2 --enable-expert-parallel
 ```
 
 ### Docker Parameters
 
 | Parameter | Description |
 |---|---|
-| 'd' | Runs the docker container in detached mode. ( Background process } |
+| '-d' | Runs the docker container in detached mode. ( Background process } |
 | `--gpus all` | Exposes all NVIDIA GPUs to the container via the NVIDIA Container Toolkit. |
 | `--restart unless-stopped` | Automatically restarts the container if it crashes, unless you explicitly stop it. Survives host reboots. |
 | `-v ~/.cache/huggingface:/root/.cache/huggingface` | Mounts the host's Hugging Face cache into the container so model weights are downloaded once and reused across runs. |
