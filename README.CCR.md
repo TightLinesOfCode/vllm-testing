@@ -52,6 +52,17 @@ ccr code -p "Implement X; run the tests after each change; stop when they pass."
 For scripted runs you can instead `eval "$(ccr activate)"` to export the router env into
 your shell, then call `claude` directly with any flag from `claude --help`.
 
+**Tuning `max_tokens`** (the `maxtoken` transformer above caps the output budget so
+`prompt + max_tokens` stays inside the model's window). Pick based on your needs:
+
+| If you... | Set `max_tokens` to | Effect (131072-token window) |
+| --- | --- | --- |
+| Want a good default | `16384` | Balanced — ~114K left for prompt/history |
+| Want longer single responses | `32768` | More output room, ~98K left for context |
+| Still hit context errors on big prompts | `8192` | Smaller output, ~123K left for context |
+
+Edit the value in `~/.claude-code-router/config.json`, then `ccr restart`.
+
 The rest of this doc explains each step, replication on other machines, and the vLLM server setup.
 
 ---
