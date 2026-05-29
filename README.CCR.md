@@ -33,10 +33,19 @@ EOF
 # 3. Launch Claude Code on the local model
 ccr code
 
-# 4. (Optional) Run autonomously toward a goal — flags pass straight through to claude.
-#    --permission-mode acceptEdits auto-approves edits; --max-turns bounds the run.
-ccr code -p --permission-mode acceptEdits --max-turns 40 \
-  "Implement X; run the tests after each change; stop when they pass."
+# 4. (Optional) Autonomy. --permission-mode (acceptEdits | auto | bypassPermissions
+#    | default | dontAsk | plan) works in interactive AND headless (-p) mode.
+
+# Interactive, auto-accepting edits — type your goal; press Esc to interrupt:
+ccr code --permission-mode acceptEdits
+
+# Never get prompted at all (bypasses ALL permission checks — use only in a
+# trusted dir, as here): add --dangerously-skip-permissions.
+ccr code --dangerously-skip-permissions
+
+# Headless + fully unattended, goal in the prompt (prompt goes right after -p):
+ccr code -p "Implement X; run the tests after each change; stop when they pass." \
+  --dangerously-skip-permissions
 ```
 
 For scripted runs you can instead `eval "$(ccr activate)"` to export the router env into
