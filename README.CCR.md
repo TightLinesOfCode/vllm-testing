@@ -32,7 +32,15 @@ EOF
 
 # 3. Launch Claude Code on the local model
 ccr code
+
+# 4. (Optional) Run autonomously toward a goal — flags pass straight through to claude.
+#    --permission-mode acceptEdits auto-approves edits; --max-turns bounds the run.
+ccr code -p --permission-mode acceptEdits --max-turns 40 \
+  "Implement X; run the tests after each change; stop when they pass."
 ```
+
+For scripted runs you can instead `eval "$(ccr activate)"` to export the router env into
+your shell, then call `claude` directly with any flag from `claude --help`.
 
 The rest of this doc explains each step, replication on other machines, and the vLLM server setup.
 
