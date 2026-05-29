@@ -17,7 +17,8 @@ cat > ~/.claude-code-router/config.json <<'EOF'
       "name": "vllm",
       "api_base_url": "http://192.168.1.101:8989/v1/chat/completions",
       "api_key": "dummy",
-      "models": ["nemotron-3-super"]
+      "models": ["nemotron-3-super"],
+      "transformer": { "use": [ ["maxtoken", { "max_tokens": 16384 }] ] }
     }
   ],
   "Router": {
@@ -144,7 +145,8 @@ Then write this file (replace `HOST:PORT` and `MODEL` with your values from Step
       "name": "vllm",
       "api_base_url": "http://HOST:PORT/v1/chat/completions",
       "api_key": "dummy",
-      "models": ["MODEL"]
+      "models": ["MODEL"],
+      "transformer": { "use": [ ["maxtoken", { "max_tokens": 16384 }] ] }
     }
   ],
   "Router": {
@@ -161,8 +163,11 @@ For reference, this setup's concrete values are `http://192.168.1.101:8989/v1/ch
 and `nemotron-3-super`.
 
 - `api_base_url` is the **full** path ending in `/v1/chat/completions`.
-- **No `transformer`** — CCR sends OpenAI-format requests by default, which is what vLLM
-  wants. (The `Anthropic` transformer would wrongly send Anthropic format to vLLM.)
+- **`maxtoken` transformer** caps the output tokens CCR requests (16384) so
+  `prompt + max_tokens` stays inside the model's window — otherwise Claude Code's large
+  output budget triggers "maximum context length" errors. Raise to 32768 for longer outputs.
+  (Do **not** add the `Anthropic` transformer — that would wrongly send Anthropic format to
+  vLLM, which speaks OpenAI.)
 - `api_key: "dummy"` — vLLM ignores it; CCR just wants a non-empty value.
 - `API_TIMEOUT_MS` is generous because a large local model can be slow on big prompts.
 - `Router` values use the format `"providerName,modelName"`. With one model, every category
@@ -247,6 +252,10 @@ when done (logs grow on disk and contain your prompts/responses).
   lower quality than Claude, though 120B Nemotron is on the capable end.
 - **Token budget** — keep `max_tokens` generous so reasoning + tool calls don't get
   truncated mid-call (the 128K context helps).
+- **"maximum context length" errors** — Claude Code requests an Opus-sized output budget;
+  if `prompt + max_tokens` exceeds the model's `--max-model-len`, vLLM rejects the request.
+  Fixed by the `maxtoken` transformer in the config (caps output to 16384). For long
+  sessions where the *history* itself grows large, use `/compact` inside Claude Code.
 
 ## Appendix: vLLM backend launch command
 
